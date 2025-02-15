@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>   <!-- Essa linha vai utilizar o framework do Phaser presente na web, possibilitando o desenvolvimento do código no index-->
+    <title>Exercício do Pássaro</title>
+    <style> 
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<script>
+
+    // Esse primeiro bloco é, assim como no exercício do peixe,  a configuração inicial do jogo
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config); 
+    var passarinho; //Aqui criamos a variável do pássaro.
+
+    //Aqui serão carregados os assets do jogo
+    function preload() {
+        this.load.image('bg', 'assets/bg_space.png');
+        this.load.spritesheet('passarinho', 'assets/bird-red.png', { frameWidth: 75, frameHeight: 75 }); //Essa linha vai pré-carregar o spritesheet e definir quantos pixels tem cada frame dele.
+    }
+
+    // Aqui os assets serão adicionados na cena 
+    function create() {
+        this.add.image(900, 300, 'bg');
+        passarinho = this.add.sprite(100,300,'passarinho').setScale(1.2); // Essa linha está adicionando o sprite a partir do spritesheet carregado
+
+        //Esse bloco vai criar a animação do sprite utilizando os spritesheets
+        this.anims.create ({
+            key: 'fly', //Essa vai ser a palavra utilizada para ativar a animação
+            frames: this.anims.generateFrameNumbers ('passarinho', {start: 0, end: 7}), //Aqui os frames que foram separados na outra linha no bloco acima serão numerados 
+            frameRate: 11, //Framerate do loop de sprites
+            repeat: -1 // -1 Significa que vai repetir indefinidamente
+        });
+        passarinho.anims.play('fly',true); // Aqui a animação é "chamada"
+
+    }
+
+    function update() {
+        // Esse bloco define a movimentação no eixo x do pássaro
+        if (passarinho.ida) {
+            passarinho.x += 5;
+            // Cria um limite para a movimetação do pássaro na horizontal
+            if (passarinho.x >= this.scale.width - 50) {
+                passarinho.setFlip(true, false); 
+                passarinho.ida = false;
+            }
+        } else {
+            passarinho.x -= 5;
+            if (passarinho.x <= 50) {
+                passarinho.setFlip(false, false);
+                passarinho.ida = true;
+            }
+        }
+
+        // Aqui vamos fazer o movimento vertical do primeiro pássaro
+        if (passarinho.subindo) {
+            passarinho.y -= 5;
+            // Cria um limite para a movimetação do pássaro na vertical
+            if (passarinho.y <= 50) {
+                passarinho.subindo = false;
+            }
+        } else {
+            passarinho.y += 5;
+            // Define o momento de subida do pássaro
+            if (passarinho.y >= this.scale.height - 50) {
+                passarinho.subindo = true;
+            }
+        }
+    }
+
+</script>
+
+</body>
+</html>
+
+
